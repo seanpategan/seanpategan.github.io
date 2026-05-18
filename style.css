@@ -1,0 +1,120 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --fg: #f0f0f0;
+  --fg-muted: #aaa;
+  --bg: #212121;
+  --surface: #303030;
+  --accent: #f0f0f0;
+  --border: #424242;
+  --max-width: 680px;
+  --font: system-ui, -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--bg);
+  padding: 2rem 1.5rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+a {
+  color: var(--accent);
+}
+
+a:hover {
+  opacity: 0.6;
+}
+
+nav {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+  font-size: 0.9rem;
+}
+
+section {
+  margin-bottom: 4rem;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+p {
+  color: var(--fg-muted);
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--fg-muted);
+  margin-bottom: 1.5rem;
+}
+
+.project {
+  margin-bottom: 2rem;
+}
+
+.project-meta {
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+  margin-bottom: 0.25rem;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.skills-list li {
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+footer {
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+}
