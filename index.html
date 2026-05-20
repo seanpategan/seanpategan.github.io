@@ -15,7 +15,7 @@
   <div class="layout">
 
     <aside class="sidebar">
-      <div class="name">SEAN<br>EGAN</div>
+      <h1 class="name">SEAN<br>EGAN</h1>
       <p class="tagline">Placeholder tagline</p>
       <nav>
         <a href="#about">About</a>
@@ -28,50 +28,50 @@
     <main class="content">
 
       <section id="about">
-        <div class="section-label">about</div>
+        <h2 class="section-label">about</div>
         <p>Placeholder — a short paragraph about who you are, what you work on, and what you care about. Two or three sentences.</p>
       </section>
 
       <section id="projects">
-        <div class="section-label">projects</div>
+        <h2 class="section-label">projects</div>
         <div class="project">
           <div class="project-header">
             <a href="#">Project One</a>
             <span class="project-meta">2024 &middot; Category</span>
-          </div>
+          </h2>
           <p>Placeholder — one or two sentences describing what this project does and why it matters.</p>
-        </div>
+        </h2>
         <div class="project">
           <div class="project-header">
             <a href="#">Project Two</a>
             <span class="project-meta">2024 &middot; Category</span>
-          </div>
+          </h2>
           <p>Placeholder — one or two sentences describing what this project does and why it matters.</p>
-        </div>
+        </h2>
         <div class="project">
           <div class="project-header">
             <a href="#">Project Three</a>
             <span class="project-meta">2024 &middot; Category</span>
-          </div>
+          </h2>
           <p>Placeholder — one or two sentences describing what this project does and why it matters.</p>
-        </div>
+        </h2>
       </section>
 
       <section id="skills">
-        <div class="section-label">skills</div>
+        <h2 class="section-label">skills</div>
         <div class="skills">
           Skill One <span>&middot;</span> Skill Two <span>&middot;</span> Skill Three <span>&middot;</span> Skill Four <span>&middot;</span> Skill Five <span>&middot;</span> Skill Six
-        </div>
+        </h2>
       </section>
 
       <section id="contact">
-        <div class="section-label">contact</div>
+        <h2 class="section-label">contact</div>
         <p>Placeholder — open to new work, questions, or conversation.</p>
         <div class="contact-links">
           <a href="mailto:placeholder@example.com">Email</a>
           <a href="https://github.com/placeholder" target="_blank" rel="noopener">GitHub</a>
           <a href="https://linkedin.com/in/placeholder" target="_blank" rel="noopener">LinkedIn</a>
-        </div>
+        </h2>
       </section>
 
     </main>
@@ -79,15 +79,11 @@
 
   <script>
     const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('nav a');
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(a => a.classList.remove('active'));
-          const active = document.querySelector(`nav a[href="#${entry.target.id}"]`);
-          if (active) active.classList.add('active');
-        }
+        const link = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+        if (link) link.classList.toggle('active', entry.isIntersecting);
       });
     }, { threshold: 0.3 });
 
