@@ -202,3 +202,61 @@ p {
 .contact-links a:hover {
   text-decoration: underline;
 }
+
+/* ── Mobile / narrow window ── */
+
+@media (max-width: 768px) {
+  html, body {
+    height: auto;
+  }
+
+  .layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .name {
+    font-size: 1.3rem;
+    margin-bottom: 0;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  nav {
+    flex-direction: row;
+    gap: 1rem;
+    margin-left: auto;
+  }
+
+  .content {
+    overflow-y: visible;
+    padding: 2rem 1.5rem;
+  }
+
+  p {
+    max-width: 100%;
+  }
+
+  .project-header {
+    max-width: 100%;
+  }
+
+  .skills {
+    max-width: 100%;
+  }
+}
