@@ -1,0 +1,211 @@
+:root {
+	--bg: #fcfcfc;
+	--bg-main: #fcfcfc;
+	--bg-alt: #ddd;
+	--fg: #111;
+	--fg-alt: #565151;
+	--accent: #134799;
+	--link-visited: #551a8b;
+	--tr: #eee;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #333;
+		--bg-main: #1a1a1a;
+		--bg-alt: #262626;
+		--fg: #c8c8c8;
+		--fg-alt: #909090;
+		--accent: #85b8c4;
+		--link-visited: #ff90ad;
+		--tr: #262626;
+	}
+	#icons {
+		filter: invert(85%);
+	}
+}
+html {
+	background-color: var(--bg);
+}
+body {
+	background-color: var(--bg-main);
+	color: var(--fg);
+	max-width: 40em;
+	margin: 1em auto;
+	padding: 0.5em 2em;
+	box-shadow: 5px 5px 0 var(--fg);
+	border: 1px solid var(--fg);
+	font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+	line-height: 1.5;
+}
+header {
+	text-align: center;
+	margin: 0.2em;
+	font-size: 2em;
+	font-weight: bold;
+}
+h1, h2, h3, h4, h5, h6 {
+	margin: 1em 0 -0.1em;
+	line-height: 1.1em;
+	font-size: 1.4em;
+	font-weight: bold;
+	text-decoration: underline;
+}
+nav {
+	text-align: center;
+}
+nav a {
+	padding: 0 0.5em;
+	font-size: 1.1em;
+	font-weight: bold;
+	text-decoration: none;
+}
+nav a:hover {
+	text-decoration: underline;
+}
+a, nav a:visited {
+	color: var(--accent);
+}
+a:hover {
+	text-decoration: none;
+}
+a:visited {
+	color: var(--link-visited);
+}
+img, video {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+	border: 1px solid var(--fg);
+}
+figcaption {
+	text-align: center;
+	margin: auto;
+	max-width: 640px;
+}
+cite {
+	display: inline-block;
+	margin-left: 40px;
+}
+table {
+	max-width: 100%;
+	min-width: 50%;
+	margin: auto;
+	text-align: left;
+}
+table, td, th {
+	border-collapse: collapse;
+	border: 1px solid var(--fg);
+	margin-top: 1em;
+	padding: 2px 4px;
+	vertical-align: top;
+}
+th {
+	background-color: var(--bg-alt);
+}
+pre {
+	background-color: var(--bg-alt);
+	overflow: auto;
+	padding: 0.5em;
+	border: 1px var(--fg) solid;
+}
+code {
+	font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+.note {
+	border: 3px solid var(--accent);
+	margin: 0.7em 0;
+}
+.note p {
+	margin: 0.5em 1em;
+}
+.date, figcaption {
+	font-size: smaller;
+	color: var(--fg-alt);
+}
+/* Shared image placeholder box (swap for a real <img>) */
+.placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 3 / 2;
+	background-color: var(--bg-alt);
+	border: 1px solid var(--fg);
+	color: var(--fg-alt);
+	font-size: 0.95em;
+}
+
+/* Album cover: a big image linking to its own page */
+.album {
+	display: block;
+	margin-top: 1.5em;
+	text-decoration: none;
+	color: var(--fg);
+}
+.album .cover,
+.album img {
+	aspect-ratio: 16 / 9;
+	width: 100%;
+	font-size: 1.4em;
+	object-fit: cover;
+}
+.album:hover .cover {
+	border-color: var(--accent);
+	color: var(--fg);
+}
+.album .hint {
+	font-size: smaller;
+	color: var(--fg-alt);
+	margin: 0.3em 0 0;
+	text-align: center;
+}
+
+/* Album page: photos stacked with descriptions */
+.photos figure {
+	margin: 2em 0;
+}
+.photos figcaption {
+	text-align: left;
+	margin-top: 0.5em;
+}
+
+/* Dropdowns (matches the paritybit style) */
+details {
+	margin: 0.4em 0 1.5em;
+}
+summary:hover {
+	cursor: pointer;
+	background-color: var(--bg-alt);
+}
+details figure {
+	margin: 0.8em 0 0;
+}
+details figcaption {
+	text-align: left;
+	margin-top: 0.4em;
+}
+#icons {
+	float: right;
+}
+@media print {
+	pre {
+		white-space: pre-wrap;
+	}
+	nav {
+		display: none;
+	}
+}
+@media only screen and (max-width: 700px) {
+	html {
+		background-color: var(--bg-main);
+	}
+	body {
+		border: none;
+		box-shadow: none;
+	}
+	#icons {
+		float: none;
+	}
+	nav a {
+		display: inline-block;
+	}
+}
