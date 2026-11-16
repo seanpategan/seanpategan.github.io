@@ -1,0 +1,16 @@
+{
+  "name": "meeting-booker",
+  "private": true,
+  "description": "Sean Egan's meeting booker: an allow-listed booking page behind an emailed one-time code. One Worker (src/index.js) with D1. Run from this directory.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler d1 migrations apply meeting-booker --local && wrangler dev",
+    "deploy": "wrangler deploy",
+    "migrate": "wrangler d1 migrations apply meeting-booker --remote",
+    "test": "node --test test/*.test.js",
+    "test:e2e": "node --test --test-concurrency=1 test/e2e.local.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.147.0"
+  }
+}

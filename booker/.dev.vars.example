@@ -1,0 +1,4 @@
+# Copy to .dev.vars (git ignores it) for `npm run dev`. In production these are Worker secrets:
+#   npx wrangler secret put ALLOW_EMAILS
+# Comma-separated; "@example.edu" admits any address at exactly that domain.
+ALLOW_EMAILS=you@example.com,friend@example.com

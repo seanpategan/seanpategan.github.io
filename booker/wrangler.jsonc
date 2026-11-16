@@ -1,0 +1,61 @@
+// Sean Egan's meeting booker: one Worker. The source of truth for its bindings and vars;
+// dashboard edits are overwritten on deploy. Deployed by .github/workflows/deploy-booker.yml.
+//
+// TODO before the first deploy (see README.md): put in the D1 database_id and the Turnstile
+// site key, once seane.us is on Cloudflare.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "meeting-booker",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  // The site's stylesheet (../style.css), bundled as text so these pages match the site.
+  "rules": [{ "type": "Text", "globs": ["**/*.css"], "fallthrough": true }],
+
+  // No *.workers.dev address and no preview URLs: the custom domain is the only way in.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "book.seane.us", "custom_domain": true }],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "meeting-booker",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Cloudflare Email Sending, only ever from the one sender address.
+  "send_email": [{ "name": "EMAIL", "allowed_sender_addresses": ["noreply@seane.us"] }],
+
+  // namespace_id must be unique within the Cloudflare account (sat-fordhamprep uses 4101-4104).
+  "ratelimits": [
+    { "name": "RL_START", "namespace_id": "5101", "simple": { "limit": 5, "period": 60 } },
+    { "name": "RL_START_IP", "namespace_id": "5104", "simple": { "limit": 20, "period": 60 } },
+    { "name": "RL_VERIFY", "namespace_id": "5102", "simple": { "limit": 30, "period": 60 } },
+    { "name": "RL_GLOBAL", "namespace_id": "5103", "simple": { "limit": 300, "period": 60 } }
+  ],
+
+  "vars": {
+    "HOSTS": "book.seane.us",
+    "SITE_URL": "https://seane.us",
+    "FROM_ADDRESS": "noreply@seane.us",
+    "OWNER_NAME": "Sean Egan",
+    "OWNER_EMAIL": "sean.pat.egan@gmail.com",
+    // When I'm free to meet, in TZ. Days: Sun Mon Tue Wed Thu Fri Sat, or a range like Mon-Fri.
+    "TZ": "America/New_York",
+    "HOURS": "Mon-Fri 16:00-19:00, Sat 10:00-13:00",
+    "SLOT_MINUTES": "30",
+    "LEAD_HOURS": "12",       // nothing sooner than this
+    "HORIZON_DAYS": "21",     // nothing further out than this
+    // Turnstile on the email form. The secret is the Worker secret TURNSTILE_SECRET.
+    "TURNSTILE_SITEKEY": "TODO",
+    "TURNSTILE_HOSTNAMES": "book.seane.us"
+    // Secrets (npx wrangler secret put ...), never in this file:
+    //   ALLOW_EMAILS       who may book, comma-separated (src/access.js); kept out of the repo
+    //   TURNSTILE_SECRET   Turnstile widget secret
+    //   CAL_ICS_URL        Google Calendar "Secret address in iCal format"
+  },
+
+  "observability": { "enabled": true, "head_sampling_rate": 1 }
+}

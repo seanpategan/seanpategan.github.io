@@ -1,0 +1,4 @@
+# GitHub Pages: the booking Worker's source lives in booker/ and is deployed to Cloudflare,
+# not served as part of this site.
+exclude:
+  - booker
