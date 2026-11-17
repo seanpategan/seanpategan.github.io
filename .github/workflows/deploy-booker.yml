@@ -3,7 +3,9 @@
 #
 # Deploying stays off until the repo variable BOOKER_DEPLOY is "true" (Settings -> Secrets and
 # variables -> Actions -> Variables), so pushes don't fail before the Cloudflare side exists.
-# Needs the repo secret CLOUDFLARE_API_TOKEN and the variable CLOUDFLARE_ACCOUNT_ID.
+# Needs the repo variable CLOUDFLARE_ACCOUNT_ID and the repo secrets CLOUDFLARE_API_TOKEN,
+# ALLOW_EMAILS, CAL_ICS_URL and TURNSTILE_SECRET. The last three are copied into the Worker
+# as Worker secrets on every deploy. The Worker runs in Mike Egan's Cloudflare account.
 name: Meeting booker
 
 on:
@@ -50,3 +52,16 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npx wrangler d1 migrations apply meeting-booker --remote
       - run: npx wrangler deploy
+      # Repo secrets -> Worker secrets. Each value comes in through env and is piped to wrangler,
+      # so it never appears in a command line or the log. A missing one stops the job rather than
+      # replacing the Worker's secret with an empty value.
+      - name: Set Worker secrets
+        env:
+          ALLOW_EMAILS: ${{ secrets.ALLOW_EMAILS }}
+          CAL_ICS_URL: ${{ secrets.CAL_ICS_URL }}
+          TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}
+        run: |
+          for name in ALLOW_EMAILS CAL_ICS_URL TURNSTILE_SECRET; do
+            if [ -z "${!name}" ]; then echo "::error::Repo secret $name is not set."; exit 1; fi
+            printf '%s' "${!name}" | npx wrangler secret put "$name"
+          done

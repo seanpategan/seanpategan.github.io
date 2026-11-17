@@ -1,8 +1,5 @@
 // Sean Egan's meeting booker: one Worker. The source of truth for its bindings and vars;
 // dashboard edits are overwritten on deploy. Deployed by .github/workflows/deploy-booker.yml.
-//
-// TODO before the first deploy (see README.md): put in the D1 database_id and the Turnstile
-// site key, once seane.us is on Cloudflare.
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "meeting-booker",
@@ -20,7 +17,7 @@
     {
       "binding": "DB",
       "database_name": "meeting-booker",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "d5636376-4bcd-45a0-9bb9-482650876136",
       "migrations_dir": "migrations"
     }
   ],
@@ -49,9 +46,10 @@
     "LEAD_HOURS": "12",       // nothing sooner than this
     "HORIZON_DAYS": "21",     // nothing further out than this
     // Turnstile on the email form. The secret is the Worker secret TURNSTILE_SECRET.
-    "TURNSTILE_SITEKEY": "TODO",
+    "TURNSTILE_SITEKEY": "0x4AAAAAAGEY_Jkjs8Fn2VCf",
     "TURNSTILE_HOSTNAMES": "book.seane.us"
-    // Secrets (npx wrangler secret put ...), never in this file:
+    // Worker secrets, never in this file. They are GitHub repo secrets of the same names, which
+    // the deploy job copies into the Worker (.github/workflows/deploy-booker.yml):
     //   ALLOW_EMAILS       who may book, comma-separated (src/access.js); kept out of the repo
     //   TURNSTILE_SECRET   Turnstile widget secret
     //   CAL_ICS_URL        Google Calendar "Secret address in iCal format"
