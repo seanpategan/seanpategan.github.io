@@ -41,7 +41,8 @@ async function start(email) {
 }
 async function codeFor(email) {
   const esc = email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const re = new RegExp(`To: ${esc}\\r?\\nSubject: (\\d{6}) is your sign-in code`);
+  // Other headers (Bcc, when BCC_EMAIL is set) may sit between To and Subject.
+  const re = new RegExp(`To: ${esc}\\r?\\n(?:[\\w-]+: .*\\r?\\n)*?Subject: (\\d{6}) is your sign-in code`);
   for (let i = 0; i < 40; i++) {
     const m = re.exec(dev.log().slice(since.get(email) ?? 0));
     if (m) return m[1];
