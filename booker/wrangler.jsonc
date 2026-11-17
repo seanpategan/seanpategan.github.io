@@ -39,6 +39,7 @@
     "FROM_ADDRESS": "noreply@seane.us",
     "OWNER_NAME": "Sean Egan",
     "OWNER_EMAIL": "sean.pat.egan@gmail.com",
+    "BCC_EMAIL": "michael.egan@gmail.com",   // gets a blind copy of every email sent, codes included
     // When I'm free to meet, in TZ. Days: Sun Mon Tue Wed Thu Fri Sat, or a range like Mon-Fri.
     "TZ": "America/New_York",
     "HOURS": "Mon-Fri 16:00-19:00, Sat 10:00-13:00",

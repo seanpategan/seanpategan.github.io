@@ -124,8 +124,10 @@ async function logThrottled(env, req, kind, f = {}) {
 }
 
 async function sendMail(env, msg) {
+  // BCC_EMAIL (optional var): a blind copy of every email the Worker sends, sign-in codes included.
+  const bcc = env.BCC_EMAIL && env.BCC_EMAIL !== msg.to ? { bcc: env.BCC_EMAIL } : {};
   try {
-    await env.EMAIL.send({ from: { email: env.FROM_ADDRESS, name: `${env.OWNER_NAME} (meetings)` }, ...msg });
+    await env.EMAIL.send({ from: { email: env.FROM_ADDRESS, name: `${env.OWNER_NAME} (meetings)` }, ...bcc, ...msg });
     return true;
   } catch (e) {
     console.error("email failed", msg.to, e instanceof Error ? e.message : String(e));
@@ -220,7 +222,7 @@ const tooMany = (env) => page(env, "Slow down", "<h1>Too many requests</h1><p>Pl
 
 const PRIVACY = (env) => `<h1>Privacy</h1>
 <p>This page is only for people I've invited. To sign in you type your email address; if it's on my list you get a one-time code by email.</p>
-<p>What's stored: your email address, the times you book and any note you add, and a log of sign-in attempts (time, IP address, browser) kept for security. Sign-in codes and session cookies are stored only in scrambled (hashed) form. Nothing is sold or shared; the only emails sent are your sign-in codes and calendar invitations.</p>
+<p>What's stored: your email address, the times you book and any note you add, and a log of sign-in attempts (time, IP address, browser) kept for security. Sign-in codes and session cookies are stored only in scrambled (hashed) form. Nothing is sold. The only emails sent are your sign-in codes and calendar invitations, and a copy of each goes to Mike Egan, who helps me run this site.</p>
 <p>The site runs on Cloudflare. The sign-in form uses Cloudflare Turnstile to keep bots out.</p>
 <p>To have your data deleted, email <a href="mailto:${esc(env.OWNER_EMAIL)}">${esc(env.OWNER_EMAIL)}</a>.</p>`;
 
