@@ -49,7 +49,7 @@ What Sean sets in this repo (Settings → Secrets and variables → Actions, or 
 |---|---|---|
 | `CLOUDFLARE_API_TOKEN` | secret | The deploy token from Mike |
 | `TURNSTILE_SECRET` | secret | The Turnstile secret from Mike |
-| `ALLOW_EMAILS` | secret | Who can book, comma-separated; `@domain` admits a whole domain |
+| `ALLOW_EMAILS` | secret | Who can book, comma-separated; `@domain` admits a whole domain, `@*.edu` (or `.edu`) any domain ending in `.edu` |
 | `CAL_ICS_URL` | secret | Google Calendar → Settings → my calendar → "Secret address in iCal format" |
 | `CLOUDFLARE_ACCOUNT_ID` | variable | Mike's account ID |
 | `BOOKER_DEPLOY` | variable | `true`, set last, once Mike says email sending is on; it turns deploys on |

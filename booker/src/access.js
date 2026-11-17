@@ -7,16 +7,20 @@
 // takes effect at once, whatever sessions exist.
 //
 // Exact addresses only: no dot variants, no +tags. An entry "@example.edu" admits any address
-// at exactly that domain ("x.example.edu" is not admitted).
+// at exactly that domain ("x.example.edu" is not admitted). An entry ".edu" or ".example.edu"
+// (also written "@*.edu", "@*.example.edu") admits any domain ending in it, at a label boundary (".edu" admits "cooper.edu" and
+// "mail.cooper.edu", not "notedu.com" or "edu.evil.com").
 
-/** The ALLOW_EMAILS secret as { emails, domains }. Anything unreadable in it is ignored. */
+/** The ALLOW_EMAILS secret as { emails, domains, suffixes }. Anything unreadable in it is ignored. */
 export function allowList(env) {
-  const emails = [], domains = [];
-  for (const raw of String(env?.ALLOW_EMAILS ?? "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)) {
+  const emails = [], domains = [], suffixes = [];
+  for (const entry of String(env?.ALLOW_EMAILS ?? "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)) {
+    const raw = entry.startsWith("@*.") ? entry.slice(2) : entry;   // "@*.edu" is ".edu"
     if (raw.startsWith("@")) { if (parseEmail(`x${raw}`)) domains.push(raw.slice(1)); }
+    else if (raw.startsWith(".")) { if (/^(\.[a-z0-9-]{1,63})+$/.test(raw) && parseEmail(`x@x${raw}`)) suffixes.push(raw); }
     else { const e = parseEmail(raw); if (e) emails.push(e); }
   }
-  return { emails, domains };
+  return { emails, domains, suffixes };
 }
 
 /**
@@ -50,6 +54,7 @@ export const mailboxOf = (email) => {
 /** Whether this (already parsed) address may sign in and book, by the ALLOW_EMAILS secret in `env`. */
 export function mayBook(email, env) {
   if (!email) return false;
-  const { emails, domains } = allowList(env);
-  return emails.includes(email) || domains.includes(domainOf(email));
+  const { emails, domains, suffixes } = allowList(env);
+  const domain = domainOf(email);
+  return emails.includes(email) || domains.includes(domain) || suffixes.some((s) => domain.endsWith(s));
 }

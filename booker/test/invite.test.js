@@ -47,7 +47,7 @@ test("folding never splits a multi-byte character", () => {
 
 test("the allow list comes from ALLOW_EMAILS: exact addresses, and @domain entries", () => {
   const env = { ALLOW_EMAILS: " Owner@Example.com, friend.one@example.com,@school.example.edu, not an address" };
-  assert.deepEqual(allowList(env), { emails: ["owner@example.com", "friend.one@example.com"], domains: ["school.example.edu"] });
+  assert.deepEqual(allowList(env), { emails: ["owner@example.com", "friend.one@example.com"], domains: ["school.example.edu"], suffixes: [] });
   for (const ok of ["owner@example.com", " Friend.One@Example.com ", "anyone@school.example.edu"]) {
     assert.ok(mayBook(parseEmail(ok), env), ok);
   }
@@ -56,5 +56,13 @@ test("the allow list comes from ALLOW_EMAILS: exact addresses, and @domain entri
     assert.ok(!mayBook(parseEmail(no), env), String(no));
   }
   assert.ok(!mayBook("owner@example.com", {}), "no secret set: nobody");
+  // ".edu": any domain ending in .edu, at a label boundary.
+  const edu = { ALLOW_EMAILS: ".edu, ., .-bad-, @*., @gmail.com" };
+  assert.deepEqual(allowList(edu).suffixes, [".edu"]);
+  assert.deepEqual(allowList({ ALLOW_EMAILS: "@*.edu" }), allowList({ ALLOW_EMAILS: ".edu" }));
+  for (const ok of ["a@cooper.edu", "b@mail.columbia.edu", "c@gmail.com"]) assert.ok(mayBook(parseEmail(ok), edu), ok);
+  for (const no of ["a@notedu.com", "a@edu.evil.com", "a@cooper.edu.evil.com", "a@cooperedu", "a@yahoo.com"]) {
+    assert.ok(!mayBook(parseEmail(no), edu), no);
+  }
   assert.equal(mailboxOf("friend.one+test@example.com"), "friend.one@example.com");
 });
