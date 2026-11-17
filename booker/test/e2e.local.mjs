@@ -77,7 +77,7 @@ test("the sign-in page is the site's page, with its stylesheet", async () => {
   assert.equal(r.status, 200);
   const html = await r.text();
   assert.match(html, /<header>Sean Egan<\/header>/);
-  assert.match(html, /href="\/">Meetings/);
+  assert.match(html, /href="https:\/\/seane\.us\/meetings\/">Meetings/);
   assert.match(html, /<form method="post" action="\/auth\/start">/);
   assert.match(r.headers.get("Content-Security-Policy"), /frame-ancestors 'none'/);
   const css = await (await get("/style.css")).text();

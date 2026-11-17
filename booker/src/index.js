@@ -187,7 +187,7 @@ function page(env, title, body, { status = 200, headers = {}, who = null } = {})
 		<a href="${site}/">Home</a>
 		<a href="${site}/projects/">Projects</a>
 		<a href="${site}/tech/">Tech</a>
-		<a href="/">Meetings</a>
+		<a href="${site}/meetings/">Meetings</a>
 	</nav>
 	<hr>
 	<main>
