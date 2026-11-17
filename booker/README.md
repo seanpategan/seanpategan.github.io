@@ -1,6 +1,6 @@
 # Meeting booker
 
-The booking page behind [seane.us/meetings](https://seane.us/meetings/),
+The booking page at [book.seane.us](https://book.seane.us/),
 built from [eganator/meeting-booker](https://github.com/eganator/meeting-booker)'s guide, with
 the sign-in copied from sat-fordhamprep. It's one Cloudflare Worker in plain JavaScript, with D1 for
 storage and Email Sending for codes and invitations.
@@ -11,7 +11,7 @@ storage and Email Sending for codes and invitations.
 | `src/access.js` | Allow-list checks. The list itself is the `ALLOW_EMAILS` secret, not in the repo |
 | `src/slots.js` | Open times from `HOURS`, minus bookings and busy blocks |
 | `src/ics.js` | Busy blocks from the calendar's private iCal feed (repeating events included) |
-| `src/invite.js` | The `.ics` invitation and cancellation |
+| `src/invite.js` | The `.ics` invitation and cancellation, with the meeting's Jitsi Meet link |
 | `src/time.js` | Time zones and daylight saving, with no library |
 | `wrangler.jsonc` | Bindings and settings: hours, slot length, lead time, horizon |
 
@@ -56,9 +56,6 @@ What Sean sets in this repo (Settings → Secrets and variables → Actions, or 
 
 `ALLOW_EMAILS`, `TURNSTILE_SECRET` and `CAL_ICS_URL` are GitHub repo secrets that Sean sets, not
 Worker secrets that Mike sets with wrangler. Never put any of them in a file or a commit.
-
-After the first deploy, swap the "not live yet" note on `meetings/index.html` for the link
-(it's in a comment there).
 
 Before telling people about it: try an address that isn't on the list (it should get the same
 page and no email), book from two browsers at once, and accept an invite on a phone to check the time.

@@ -77,7 +77,7 @@ test("the sign-in page is the site's page, with its stylesheet", async () => {
   assert.equal(r.status, 200);
   const html = await r.text();
   assert.match(html, /<header>Sean Egan<\/header>/);
-  assert.match(html, /href="https:\/\/seane\.us\/meetings\/">Meetings/);
+  assert.match(html, /href="\/">Meetings/);
   assert.match(html, /<form method="post" action="\/auth\/start">/);
   assert.match(r.headers.get("Content-Security-Policy"), /frame-ancestors 'none'/);
   const css = await (await get("/style.css")).text();
@@ -133,6 +133,9 @@ test("book, race for one slot, one booking each, cancel", async () => {
   if (winner === OWNER) assert.equal(mailTo(OWNER, from).length, 1);
   const toWinner = mailTo(winner, from).join("");
   assert.match(toWinner, /METHOD:REQUEST/);
+  // Its own Jitsi room, in the invitation's location and description.
+  assert.match(toWinner.replace(/\r\n /g, ""), /DESCRIPTION:Join in your browser: https:\/\/meet\.jit\.si\/seane-[a-f0-9]{32}/);
+  assert.match(toWinner.replace(/\r\n /g, ""), /LOCATION:https:\/\/meet\.jit\.si\/seane-[a-f0-9]{32}/);
   assert.match(toWinner, /Subject: Booked: /);
   if (winner !== OWNER) assert.match(mailTo(OWNER, from).join(""), new RegExp(`Booked: .* with ${winner.replace(/\./g, "\\.")}`));
 

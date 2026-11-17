@@ -4,7 +4,7 @@
 # Deploying stays off until the repo variable BOOKER_DEPLOY is "true" (Settings -> Secrets and
 # variables -> Actions -> Variables), so pushes don't fail before the Cloudflare side exists.
 # Needs the repo variable CLOUDFLARE_ACCOUNT_ID and the repo secrets CLOUDFLARE_API_TOKEN,
-# ALLOW_EMAILS, CAL_ICS_URL and TURNSTILE_SECRET. The last three are copied into the Worker
+# ALLOW_EMAILS, CAL_ICS_URL and TURNSTILE_SECRET. Those are copied into the Worker
 # as Worker secrets on every deploy. The Worker runs in Mike Egan's Cloudflare account.
 name: Meeting booker
 

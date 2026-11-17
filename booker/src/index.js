@@ -187,7 +187,7 @@ function page(env, title, body, { status = 200, headers = {}, who = null } = {})
 		<a href="${site}/">Home</a>
 		<a href="${site}/projects/">Projects</a>
 		<a href="${site}/tech/">Tech</a>
-		<a href="${site}/meetings/">Meetings</a>
+		<a href="/">Meetings</a>
 	</nav>
 	<hr>
 	<main>
@@ -563,7 +563,7 @@ async function slotsPage(env, email, err = "", status = 200) {
   if (mine) {
     return page(env, "Your meeting", `<h1>Your meeting</h1>
 ${errBox(err)}<p>You're booked for <strong>${esc(whenText(Date.parse(mine.start_utc), tz))}</strong>. The calendar invitation is in your email.</p>
-${mine.note ? `<p>Your note: ${esc(mine.note)}</p>` : ""}<p>You can have one upcoming meeting at a time. To pick a different time, cancel this one first.</p>
+${meetUrl(env, mine) ? `<p>Join in your browser: <a href="${esc(meetUrl(env, mine))}">${esc(meetUrl(env, mine))}</a></p>\n` : ""}${mine.note ? `<p>Your note: ${esc(mine.note)}</p>` : ""}<p>You can have one upcoming meeting at a time. To pick a different time, cancel this one first.</p>
 <form method="post" action="/cancel">
 	<input type="hidden" name="id" value="${esc(mine.id)}">
 	<button type="submit">Cancel this meeting</button>
@@ -613,10 +613,20 @@ async function confirmPage(env, email, startMs) {
 
 // ------------------------------------------------------------------ booking
 
+/**
+ * The video call for a booking: a Jitsi Meet room on MEETING_HOST, named from the booking's
+ * random ID, so every meeting gets its own room that can't be guessed. Opens in the browser.
+ */
+function meetUrl(env, b) {
+  const host = String(env.MEETING_HOST ?? "").trim().toLowerCase();
+  return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(host) ? `https://${host}/seane-${b.id}` : "";
+}
+
 async function sendInvites(env, b, cancel) {
   const { tz } = settings(env);
   const when = whenText(b.start, tz);
-  const ics = invite(b, { host: env.HOSTS.split(",")[0].trim(), ownerName: env.OWNER_NAME, ownerEmail: env.OWNER_EMAIL, cancel });
+  const ics = invite(b, { host: env.HOSTS.split(",")[0].trim(), ownerName: env.OWNER_NAME, ownerEmail: env.OWNER_EMAIL,
+    fromAddress: env.FROM_ADDRESS, meetUrl: meetUrl(env, b), cancel });
   // One email each; just one when the owner books with himself.
   for (const to of new Set([b.email, env.OWNER_EMAIL])) {
     const owner = to === env.OWNER_EMAIL;
@@ -626,7 +636,8 @@ async function sendInvites(env, b, cancel) {
       subject: `${cancel ? "Cancelled" : "Booked"}: ${when}${owner ? ` with ${b.email}` : ` with ${env.OWNER_NAME}`}`,
       text: (cancel
         ? `The meeting on ${when} is cancelled.`
-        : `${owner ? `${b.email} booked` : "You're booked for"} ${when}. The calendar invitation is attached.`) +
+        : `${owner ? `${b.email} booked` : "You're booked for"} ${when}. The calendar invitation is attached.` +
+          (meetUrl(env, b) ? `\n\nJoin in your browser: ${meetUrl(env, b)}` : "")) +
         (b.note && !cancel ? `\n\nNote: ${b.note}` : "") + "\n",
       attachments: [{ disposition: "attachment", filename: "invite.ics",
         type: `text/calendar; method=${cancel ? "CANCEL" : "REQUEST"}`, content: ics }],

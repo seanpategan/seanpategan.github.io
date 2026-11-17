@@ -48,7 +48,9 @@
     "HORIZON_DAYS": "21",     // nothing further out than this
     // Turnstile on the email form. The secret is the Worker secret TURNSTILE_SECRET.
     "TURNSTILE_SITEKEY": "0x4AAAAAAGEY_Jkjs8Fn2VCf",
-    "TURNSTILE_HOSTNAMES": "book.seane.us"
+    "TURNSTILE_HOSTNAMES": "book.seane.us",
+    // Video calls: each booking gets its own Jitsi Meet room on this server (blank: no link).
+    "MEETING_HOST": "meet.jit.si"
     // Worker secrets, never in this file. They are GitHub repo secrets of the same names, which
     // the deploy job copies into the Worker (.github/workflows/deploy-booker.yml):
     //   ALLOW_EMAILS       who may book, comma-separated (src/access.js); kept out of the repo

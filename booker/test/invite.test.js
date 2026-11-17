@@ -5,7 +5,8 @@ import { parseEmail, mayBook, mailboxOf, allowList } from "../src/access.js";
 
 const b = { id: "ab".repeat(16), start: Date.parse("2026-12-03T21:00:00Z"), end: Date.parse("2026-12-03T21:30:00Z"),
   email: "guest@example.org", note: "College; questions, mostly\nand a second line" };
-const o = { host: "book.example.com", ownerName: "Sean Egan", ownerEmail: "owner@example.com" };
+const o = { host: "book.example.com", ownerName: "Sean Egan", ownerEmail: "owner@example.com",
+  fromAddress: "noreply@book.example.com", meetUrl: "https://meet.jit.si/seane-abab" };
 
 test("an invitation is a REQUEST with CRLF lines, folded at 75 octets", () => {
   const ics = invite(b, o);
@@ -16,9 +17,19 @@ test("an invitation is a REQUEST with CRLF lines, folded at 75 octets", () => {
   assert.match(unfolded, /METHOD:REQUEST/);
   assert.match(unfolded, /UID:abab.*@book\.example\.com/);
   assert.match(unfolded, /DTSTART:20261203T210000Z\r\nDTEND:20261203T213000Z/);
-  assert.match(unfolded, /DESCRIPTION:College\\; questions\\, mostly\\nand a second line/);
-  assert.match(unfolded, /ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:guest@example\.org/);
+  assert.match(unfolded, /DESCRIPTION:Join in your browser: https:\/\/meet\.jit\.si\/seane-abab\\n\\nCollege\\; questions\\, mostly\\nand a second line/);
+  assert.match(unfolded, /LOCATION:https:\/\/meet\.jit\.si\/seane-abab/);
+  // The booker's own address organizes; the owner and the guest are both attendees.
+  assert.match(unfolded, /ORGANIZER;CN=Sean Egan:mailto:noreply@book\.example\.com/);
+  assert.match(unfolded, /ATTENDEE;CN=Sean Egan;[^:]*:mailto:owner@example\.com/);
+  assert.match(unfolded, /ATTENDEE;CN=guest@example\.org;[^:]*:mailto:guest@example\.org/);
   assert.match(unfolded, /STATUS:CONFIRMED\r\nSEQUENCE:0/);
+});
+
+test("no Meet link, no note: no LOCATION or DESCRIPTION; booking yourself lists you once", () => {
+  const ics = invite({ ...b, note: "", email: "owner@example.com" }, { ...o, meetUrl: "" }).replace(/\r\n /g, "");
+  assert.doesNotMatch(ics, /LOCATION|DESCRIPTION/);
+  assert.equal(ics.match(/^ATTENDEE/gm).length, 1);
 });
 
 test("a cancellation keeps the UID and raises SEQUENCE", () => {

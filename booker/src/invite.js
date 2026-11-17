@@ -2,6 +2,10 @@
 // test/invite.test.js runs it under Node.
 //
 // METHOD:REQUEST shows as an invite with Yes/No/Maybe in Gmail, Apple Mail and Outlook.
+// The organizer is the booker's own address (the one the mail comes from), and the owner is an
+// attendee like the guest. If the owner were the organizer, Gmail would look for the event in
+// his own calendar ("Unable to load event") and would doubt a gmail.com organizer sent from
+// another domain.
 // The UID stays the booking's for its whole life: a cancellation is the same UID with
 // METHOD:CANCEL and a higher SEQUENCE.
 
@@ -25,9 +29,11 @@ export function fold(line) {
   return out.join("\r\n ");
 }
 
+const description = (b, o) => [o.meetUrl && `Join in your browser: ${o.meetUrl}`, b.note].filter(Boolean).join("\n\n");
+
 /**
  * b: { id, start, end (ms), email, note }
- * o: { host, ownerName, ownerEmail, cancel }
+ * o: { host, ownerName, ownerEmail, fromAddress, meetUrl, cancel }
  */
 export function invite(b, o) {
   const lines = [
@@ -39,10 +45,11 @@ export function invite(b, o) {
     `DTSTART:${stamp(b.start)}`,
     `DTEND:${stamp(b.end)}`,
     `SUMMARY:${text(`Meeting with ${o.ownerName}`)}`,
-    ...(b.note ? [`DESCRIPTION:${text(b.note)}`] : []),
-    `ORGANIZER;CN=${text(o.ownerName)}:mailto:${o.ownerEmail}`,
-    `ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${b.email}`,
-    `ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:${o.ownerEmail}`,
+    ...(o.meetUrl ? [`LOCATION:${text(o.meetUrl)}`, `URL:${o.meetUrl}`] : []),
+    ...(description(b, o) ? [`DESCRIPTION:${text(description(b, o))}`] : []),
+    `ORGANIZER;CN=${text(o.ownerName)}:mailto:${o.fromAddress}`,
+    ...[...new Set([o.ownerEmail, b.email])].map((m) =>
+      `ATTENDEE;CN=${m === o.ownerEmail ? text(o.ownerName) : m};ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=FALSE:mailto:${m}`),
     `STATUS:${o.cancel ? "CANCELLED" : "CONFIRMED"}`,
     `SEQUENCE:${o.cancel ? 1 : 0}`,
     "END:VEVENT", "END:VCALENDAR",
